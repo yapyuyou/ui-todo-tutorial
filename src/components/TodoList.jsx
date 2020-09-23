@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button } from "antd";
 import { TodoContext } from "../context/TodoContextProvider";
-import { todoReducer } from "../context/todo.reducer";
-import { SET_TODOS, setTodos } from "../context/todo.actions";
+import { setTodos } from "../context/todo.actions";
 import { firebaseApi } from "../services/firebaseApi";
 
 const TodoTask = (props) => {

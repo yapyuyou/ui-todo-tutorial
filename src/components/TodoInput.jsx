@@ -1,7 +1,7 @@
 import { Button, Input } from "antd";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { setTodos, addTodo } from "../context/todo.actions";
+import { setTodos } from "../context/todo.actions";
 import { TodoContext } from "../context/TodoContextProvider";
 import { firebaseApi } from "../services/firebaseApi";
 
