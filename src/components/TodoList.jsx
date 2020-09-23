@@ -1,11 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "antd";
 import { TodoContext } from "../context/TodoContextProvider";
+import { todoReducer } from "../context/todo.reducer";
+import { SET_TODOS, setTodos } from "../context/todo.actions";
+import { firebaseApi } from "../services/firebaseApi";
 
 const TodoTask = (props) => {
+  const [inputValue, setInputValue] = useState("lel");
   return (
     <div className="todo-task">
-      <div className="todo-task__name" data-cy="todo-task__name">
+      <div className="todo-task__name"
+      data-cy="todo-task__name"
+      contentEditable="true"
+      onChange={({ target: { value } }) => setInputValue(value)}
+      >
         {props.description}
       </div>
       <Button
@@ -13,7 +21,7 @@ const TodoTask = (props) => {
         shape="round"
         className="todo-task__button"
         data-cy="todo-task__button-update"
-        onClick={() => {}}
+        onClick={() => {props.update(props.id, inputValue)}}
       >
         Update
       </Button>
@@ -32,18 +40,27 @@ const TodoTask = (props) => {
 
 export const TodoList = () => {
   const { state } = useContext(TodoContext);
+  const { dispatch } = useContext(TodoContext);
 
-  // useEffect(() => {
-  //   const fetchTodos = async () => {
-  //     const todos = await firebaseApi.fetchTodos();
-  //     dispatch(setTodos(todos));
-  //   }
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const todos = await firebaseApi.fetchTodos();
+      dispatch(setTodos(todos));
+    }
 
-  //   fetchTodos();
-  // }, [dispatch]);
+    fetchTodos();
+  }, [dispatch]);
 
-  const handleDeleteTodo = (id) => {
-    // TODO: fill in
+  const handleDeleteTodo = async (id) => {
+    firebaseApi.deleteTodo(id);
+    const todos = await firebaseApi.fetchTodos();
+    dispatch(setTodos(todos));
+  };
+
+  const handleUpdateTodo = async (id, description) => {
+    firebaseApi.updateTodo(id, description);
+    const todos = await firebaseApi.fetchTodos();
+    dispatch(setTodos(todos));
   };
 
   return (
@@ -53,6 +70,7 @@ export const TodoList = () => {
           key={id}
           description={todo.description}
           delete={handleDeleteTodo}
+          update={handleUpdateTodo}
           id={id}
         />
       ))}
